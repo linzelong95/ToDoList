@@ -1,13 +1,14 @@
 import React from "react"
 import cmtitem from "@/less/cmtitem.less"
 //import bootcss from "bootstrap/dist/css/bootstrap.css"
-import { message,Button,Checkbox } from 'antd';
+import { message,Button,Checkbox,Popconfirm } from 'antd';
 export default class CmtItem extends React.Component{
     constructor(props){
         super(props);
         this.handleOnChange=this.handleOnChange.bind(this);
-        this.handleDelete=this.handleDelete.bind(this);
+        //this.handleDelete=this.handleDelete.bind(this);
         this.handleEdit=this.handleEdit.bind(this);
+        this.confirm=this.confirm.bind(this);
     }
 
     handleOnChange(e){
@@ -34,6 +35,9 @@ export default class CmtItem extends React.Component{
         this.props.showPanel(msg);
         this.props.neededMsg(JSON.parse(localStorage.getItem("events"))[this.props.item["num"]]);
     }
+    confirm() {
+        this.handleDelete();
+      }
     render(){
         let item=this.props.item;
         return(
@@ -44,7 +48,10 @@ export default class CmtItem extends React.Component{
                 <button className={cmtitem.delete} onClick={this.handleDelete}>删除</button> */}
                 <Checkbox className={cmtitem.checkbox} checked={item.check=="0"?false:true} onChange={this.handleOnChange}/>
                 <Button size="small" className={cmtitem.edit} onClick={this.handleEdit}>编辑</Button>
-                <Button size="small" className={cmtitem.delete} onClick={this.handleDelete}>删除</Button>
+                <Popconfirm placement="leftTop" title="删除后无法恢复，确定删除吗？" onConfirm={this.confirm} onCancel={()=>{}} okText="确定" cancelText="取消">
+                    <Button size="small" className={cmtitem.delete}>删除</Button>
+                </Popconfirm>
+                
                 <span className={cmtitem.content} style={item.style}>{item.content}</span>
                 <span className={cmtitem.timer} style={item.style}>{item.timer}</span>
             </li>
