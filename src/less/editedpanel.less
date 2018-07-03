@@ -1,0 +1,66 @@
+.position{
+    position:absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}
+.box(@height:500px,@width:500px,@background:yellow){
+    height:@height;
+    width:@width;
+    background: @background;
+}
+.block{
+    display:block;
+    margin-top: 3%;
+}
+.size(@width:100%,@height:8%,@margin-bottom:3%){
+    width:@width;
+    height:@height;
+    margin-bottom:@margin-bottom;
+}
+.button(@background){
+    background:@background;
+    cursor: pointer;
+    width: 16%;
+    height:8%;
+    margin:10% 0 0 23%;
+    border:none;
+    color:blue;
+}
+
+
+.Panel{
+    .position;
+    .box;
+}
+.allcontent{
+    .position;
+    .box(380px,380px);
+}
+.titleSpan{
+    .block;
+}
+.contentSpan{
+    .block;
+}
+.timerSpan{
+    margin-right:20%;
+}
+.add{
+    .button(lightgreen);
+}
+.update{
+    .button(lightgreen);
+}
+.exit{
+    .button(pink);
+}
+.title{
+    .size();
+}
+.content{
+    .size(100%,40%,3%);
+}
+.timer{
+    .size(100%,8%,10%);
+}

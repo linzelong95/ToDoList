@@ -1,0 +1,335 @@
+<!DOCTYPE>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>备忘录</title>
+    <link rel="stylesheet" type="text/css" href="icon/iconfont.css" />
+</head>
+<style>
+    *{margin:0;padding:0;}
+    body{background:url(img/background.jpg) no-repeat;background-size: 100%;}
+    #navigator{height:50px;background-color: aquamarine;opacity: 0.5;}
+    .title{display: inline;line-height: 50px;margin-left: 250px;cursor: pointer;}
+    #show{display:none;cursor: pointer;}
+    #roll_up{cursor: pointer;}
+    table{margin-left:250px;border:0;}
+    tr{height:50px;cursor: pointer;}
+    td:nth-child(2){width:200px;text-align:center;}
+    td:nth-child(3){width:500px;text-align:center;}
+    td:nth-child(4){width:200px;text-align:center;}
+    tr:hover{background: yellow;}
+    #editPanel{display:none;position:absolute;height:500px;width:500px;left: 50%;top: 50%;transform: translate(-50%,-50%);background-color:gray;}
+    #allcontent{position:absolute;height:350px;width:350px;left: 50%;top: 50%;transform: translate(-50%,-50%);background-color:gray;}
+    #editPanel span{display: block;}
+    #editPanel input{display: block;}
+    #editPanel button{width: 16%;height:8%;margin-left:15%;border:none;}
+    #add{background:green;cursor: pointer;}
+    #update{background:orange;cursor: pointer;}
+    #del{background:red;cursor: pointer;}
+    #exit{background:red;cursor: pointer;}
+    #tip{width: 100%;height:8%;margin-bottom:3%;}
+    #content{width: 100%;height:40%;margin-bottom:3%;}
+    #timer{width: 100%;height:8%;margin-bottom:10%;}
+</style>
+<body>
+    <div id="navigator">
+        <div class="title" onclick="selectAllOrPart(this)">
+            <i class="iconfont icon-icon"></i>&nbsp;未完成/全部
+        </div>
+        <div class="title">
+            <span id="show" onclick="show()">展开<i class="iconfont icon-down"></i></span>
+            <span id="roll_up" onclick="roll_up()">收起</span>
+        </div>
+        <div class="title">
+            <i class="iconfont icon-msnui-add" onclick="addWarnning()"></i>
+        </div>
+        <div class="title">
+            <i class="iconfont icon-shezhi"></i>
+        </div>
+    </div>
+    <div id="tb"></div>
+    <div id="editPanel">
+        <div id="allcontent">
+            <span>请输入标题：</span>
+            <input type="text" id="tip"/>
+            <span>请输入事件详情：</span>
+            <textarea id="content"></textarea>
+            <span>请设置提醒时间：</span>
+            <input type="datetime-local" id="timer"/>
+            <button id="add" onclick="add()">添加</button>
+            <button id="update" onclick="update(this)">更新</button>
+            <button id="exit" onclick="exit()">取消</button>
+            <button id="del" onclick="del(this)">删除</button>
+        </div>
+    </div>
+</body>
+<script>
+    var loop;
+    var index=false;
+    window.onload=function(){
+        showAll("y");
+    }
+
+    function showAll(isAll){
+        //localStorage.removeItem("events");
+        var events=JSON.parse(localStorage.getItem("events"));
+        var str="<table cellspacing=0 cellpadding=0>";
+        var str_checked="";
+        var str_undone="";
+        for(var i in events){
+            var title=events[i].title;
+            var content=events[i].content;
+            var timer=events[i].timer;
+            var timeStamp=new Date(timer).getTime();
+            var date = timer.toString();
+            var year = date.substring(0,4);
+            var month = date.substring(5,7);
+            var day = date.substring(8,10);
+            var hour = date.substring(11,13);
+            var minute = date.substring(14,16);
+            var date3 = GetDateStr(-1);//昨天
+            var str3=date3.split("-");
+            var date0 = GetDateStr(0);//今天
+            var str0=date0.split("-");
+            var date1 = GetDateStr(1);//明天
+            var str1=date1.split("-");
+            var date2 = GetDateStr(2);//后天
+            var str2=date2.split("-");
+            if(year == str3[0] && month == str3[1] && day == str3[2]){
+                timer="昨天"+ " "+hour+":"+minute
+            }else if(year == str0[0] && month == str0[1] && day == str0[2]){
+                timer="今天"+ " "+hour+":"+minute
+            }else if(year == str1[0] && month == str1[1] && day == str1[2]){
+                timer="明天"+ " "+hour+":"+minute
+            }else if(year == str2[0] && month == str2[1] && day == str2[2]){
+                timer="后天"+ " "+hour+":"+minute       
+            }else{
+                timer=timer.replace("T"," ");
+            }
+            if(events[i].check=="1"){
+                str_checked+="<tr name='"+i+"' onclick='edit(this)' style='color:grey'><td><input name='groupcheckbox' type='checkbox' checked='true' onchange='change(this)'></td><td>"+title+"</td><td>"+content+"</td><td>"+timer+"</td></tr>";
+            }else{
+                if(timeStamp<=new Date().getTime()){
+                    str_undone+="<tr name='"+i+"' onclick='edit(this)' style='color:red'><td><input name='groupcheckbox' type='checkbox' onchange='change(this)'></td><td>"+title+"</td><td>"+content+"</td><td>"+timer+"</td></tr>";
+                }
+                if(timeStamp>new Date().getTime()){
+                    str+="<tr name='"+i+"' onclick='edit(this)'><td><input name='groupcheckbox' type='checkbox' onchange='change(this)'></td><td>"+title+"</td><td>"+content+"</td><td>"+timer+"</td></tr>";
+                }
+            }   
+        }
+        str+=str_undone;
+        if(isAll=="y"){
+            str+=str_checked;
+        }
+        str+="</table>";
+        document.getElementById("tb").innerHTML=str;
+        var checkboxs=document.getElementsByName("groupcheckbox");
+        for(var i=0;i<checkboxs.length;i++){
+            (function(i){
+                checkboxs[i].onclick=function(e){
+                    if(e && e.stopPropagation){
+                        e.stopPropagation();
+                    }else{
+                        window.event.cancelable=true;
+                    }
+                }
+            })(i);
+        } 
+    }
+
+    function GetDateStr(AddDayCount) { 
+        var dd = new Date(); 
+        dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期 
+        var y = dd.getFullYear(); 
+        var m = dd.getMonth()+1;//获取当前月份的日期 
+        var d = dd.getDate();
+        m=m.toString().length==1?"0"+m:m;
+        d=d.toString().length==1?"0"+d:d;
+        return y+"-"+m+"-"+d; 
+    }
+
+    function timer_format(timer){
+        if(timer.indexOf("今天")!=-1){
+            timer=timer.replace("今天 ",GetDateStr(0)+"T");
+        }else if(timer.indexOf("明天")!=-1){
+            timer=timer.replace("明天 ",GetDateStr(1)+"T");
+        }else if(timer.indexOf("后天")!=-1){
+            timer=timer.replace("后天 ",GetDateStr(2)+"T");
+        }else if(timer.indexOf("昨天")!=-1){
+            timer=timer.replace("昨天 ",GetDateStr(-1)+"T");
+        }else{
+            timer=timer.replace(" ","T");
+        }
+        return timer;
+    }
+
+    function selectAllOrPart(obj){
+        if(!index){
+            showAll("part");
+            index=true;
+        }else{
+            showAll("y");
+            index=false;
+        }
+    }
+
+    function addWarnning(){
+        stop();
+        document.getElementById("update").style.display="none";
+        document.getElementById("del").style.display="none";
+        document.getElementById("add").style.display="inline-block";
+        document.getElementById("exit").style.display="inline-block";
+        document.getElementById("editPanel").style.display="block";
+    }
+
+    function add(){
+        var title=document.getElementById("tip").value;
+        var content=document.getElementById("content").value;
+        var timer=document.getElementById("timer").value;
+        if(title.length==0){
+            alert("请输入标题");
+            return false;
+        }
+        if(isNaN(parseInt(timer.substring(11,13))) || isNaN(parseInt(timer.substring(14,16)))){
+            alert("请完善时间");
+            return false;
+        }
+        var timeStamp=new Date(timer).getTime();
+        if(timeStamp<=new Date().getTime()){
+            alert("请把时间设置在当前时间之后！");
+            return false;
+        }
+        var num=0;
+        var events=JSON.parse(localStorage.getItem("events"));
+        if(events==null){
+            events={};
+        }
+        for(var i=1;i<501;i++){
+            if(events[i.toString()]==null){
+                num=i;
+                break;
+            }
+        }
+        if(num==0){
+            alert("备忘事项已达上限（500条）");
+            return false;
+        }
+        events[num.toString()]={"title":title,"content":content,"timer":timer,"check":"0"};
+        var e=JSON.stringify(events);
+        localStorage.setItem("events",e);
+        clear();
+        autoPlay();
+    }
+
+    function clear(){  
+        document.getElementById("tip").value="";
+        document.getElementById("content").value="";
+        document.getElementById("timer").value="";
+        document.getElementById("editPanel").style.display="none";
+    }
+
+    function edit(tr){
+        stop();
+        document.getElementById("add").style.display="none";
+        document.getElementById("update").style.display="inline-block";
+        document.getElementById("del").style.display="inline-block";
+        document.getElementById("exit").style.display="inline-block";
+        var tds=tr.getElementsByTagName("td");
+        document.getElementById("editPanel").style.display="block";
+        document.getElementById("tip").value=tds[1].innerHTML;
+        document.getElementById("content").value=tds[2].innerHTML;
+        var timer=tds[3].innerHTML.toString();
+        var timer=timer_format(timer);
+        document.getElementById("timer").value=timer;
+        //给按钮设置属性
+        var name=tr.getAttribute("name")
+        document.getElementById("del").setAttribute("delname",name);
+        document.getElementById("update").setAttribute("updatename",name);
+    }
+
+    function exit(){
+        clear();
+        autoPlay();
+    }
+
+    function update(obj){
+        var updatename=obj.getAttribute("updatename");
+        var tr=document.getElementsByName(updatename)[0];
+        var checked="0";
+        if(tr.getElementsByTagName("input")[0].checked){
+            checked="1";
+        }
+        var title=document.getElementById("tip").value;
+        var content=document.getElementById("content").value;
+        var timer=document.getElementById("timer").value;
+        var timeStamp=new Date(timer).getTime();
+        if(timeStamp<=new Date().getTime()){
+            alert("请把时间设置在当前时间之后！");
+            return false;
+        }
+        var events=JSON.parse(localStorage.getItem("events"));
+        events[updatename]={"title":title,"content":content,"timer":timer,"check":checked};
+        var e=JSON.stringify(events);
+        localStorage.setItem("events",e);
+        clear();
+        autoPlay();
+    }
+
+    function del(obj){
+        var delname=obj.getAttribute("delname");
+        var events=JSON.parse(localStorage.getItem("events"));
+        delete events[delname];
+        var e=JSON.stringify(events);
+        localStorage.setItem("events",e);
+        document.getElementById("editPanel").style.display="none";
+        autoPlay();
+    }
+
+    function roll_up(){
+        document.getElementById("tb").style.display="none";
+        document.getElementById("roll_up").style.display="none";
+        document.getElementById("show").style.display="inline-block";
+    }
+
+    function show(){
+        document.getElementById("tb").style.display="block";
+        document.getElementById("roll_up").style.display="inline-block";
+        document.getElementById("show").style.display="none";
+    }
+
+    function change(obj){
+        stop();
+        var tr=obj.parentNode.parentNode;
+        var num=tr.getAttribute("name");
+        var tds=tr.getElementsByTagName("td");
+        var title=tds[1].innerHTML;
+        var content=tds[2].innerHTML;
+        var timer=tds[3].innerHTML;
+        timer=timer_format(timer);
+        var events=JSON.parse(localStorage.getItem("events"));
+        if(obj.checked){
+            events[num]={"title":title,"content":content,"timer":timer,"check":"1"}; 
+        }else{
+            events[num]={"title":title,"content":content,"timer":timer,"check":"0"}; 
+        }
+        var e=JSON.stringify(events);
+        localStorage.setItem("events",e);
+        autoPlay();
+    }
+    
+    function autoPlay(){
+        loop=setInterval(function(){
+            if(index){
+                showAll("part");
+            }else{
+                showAll("y");
+            }   
+        },1000);
+    }
+
+    function stop(){
+        clearInterval(loop);
+    }
+    autoPlay();
+</script>
+</html>
