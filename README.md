@@ -7,3 +7,12 @@
 * 所有数据存在localStorage
 # 启动命令
 * npm run dev
+#运行截图
+![主界面](https://github.com/linzelong95/ToDoList/tree/master/picture/main.png)
+![添加事项](https://github.com/linzelong95/ToDoList/tree/master/picture/add.png)
+![编辑事项](https://github.com/linzelong95/ToDoList/tree/master/picture/edit.png)
+![删除所有](https://github.com/linzelong95/ToDoList/tree/master/picture/deleteAll.png)
+![删除该项](https://github.com/linzelong95/ToDoList/tree/master/picture/deleteOne.png)
+![折叠列表](https://github.com/linzelong95/ToDoList/tree/master/picture/roll.png)
+![只显示待做事项](https://github.com/linzelong95/ToDoList/tree/master/picture/willdo.png)
+
