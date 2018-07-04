@@ -9,24 +9,17 @@
 * npm run dev
 # 运行截图
 ![主界面.png](https://github.com/linzelong95/ToDoList/blob/master/picture/main.png)
-<center>主界面</center>
 ##### 
 ![添加事项.png](https://github.com/linzelong95/ToDoList/blob/master/picture/add.png)
-<center>添加事项</center>
 ##### 
 ![编辑事项.png](https://github.com/linzelong95/ToDoList/blob/master/picture/edit.png)
-<center>编辑事项</center>
 ##### 
 ![删除所有.png](https://github.com/linzelong95/ToDoList/blob/master/picture/deleteAll.png)
-<center>[删除所有</center>
 ##### 
 ![删除该项.png](https://github.com/linzelong95/ToDoList/blob/master/picture/deleteOne.png)
-<center>删除该项</center>
 ##### 
 ![折叠列表.png](https://github.com/linzelong95/ToDoList/blob/master/picture/roll.png)
-<center>折叠列表</center>
 ##### 
 ![只显示待做事项.png](https://github.com/linzelong95/ToDoList/blob/master/picture/willdo.png)
-<center>只显示待做事项</center>
 ##### 
 
