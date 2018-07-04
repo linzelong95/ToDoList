@@ -1,0 +1,58 @@
+.postiton(@position,@top,@left,@background,@color:white,@border:none){
+    position:@position;
+    top:@top;
+    left:@left;
+    background:@background;
+    color:@color;
+    border:@border;
+}
+.hover(@color:orange){
+    &:hover{
+        color:@color;
+    }
+}
+.timerTool(@left:65%,@top:42%){
+    position:absolute;
+    left:@left;
+    top:@top;
+    display:inline-block;
+    font-size:10px;
+}
+
+
+.item{
+    border:1px solid grey;
+    border-radius: 10px;
+    padding:10px;
+    background: paleturquoise;
+    position: relative;
+    &:hover{
+        background:yellow;
+    }
+}
+.title{
+    display: block;
+    font-weight:bold;
+    font-size:20px; 
+    margin:0 0 1% 5%;
+}
+.content{
+    display:block;
+    margin-left:5%;
+    width:55%;
+}
+.timer{
+    .timerTool();
+}
+.checkbox{
+    .postiton(absolute, 45%, 2%,yellow);
+    cursor: pointer;
+}
+.edit{
+    .postiton(absolute, 40%, 84%,green);
+    .hover;
+}
+.delete{
+    .postiton(absolute, 40%, 90%,red);
+    .hover;
+}
