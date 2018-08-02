@@ -36,7 +36,7 @@ npm i webpack webpack-cli -D
 ```
 4. 项目根目录新建webpack.config.js文件并写好配置（这时如果用webpack打包，会在dist文件夹自动生成main.js文件，我们只需要在index.html引入<script src=".../dist/main.js">就可以使用了，而不用顾及es6等语法问题）,webpack.config.js里的配置内容如下：
 ```
-module.export={
+module.exports={
   mode:"development"//项目上线用production
 }
 ```
@@ -44,7 +44,7 @@ module.export={
   ```
   npm i webpack-dev-server -D
   ```
-  并在package.json的“script”里添加：
+  并在package.json的“scripts”里添加：
   ```
   "dev":"webpack-dev-server --open"
   ```
@@ -155,7 +155,7 @@ module.export={
     导入样式，如下例（假如样式放在“src/css/”下）：
 
     ```
-    import bootcss from "@/css/style.css"
+    import styles from "@/css/style.css"
     ```
 
 12. 引入bootstrap，并安装所需解析器
@@ -253,5 +253,4 @@ module.exports={
     }
 }
 ```
-
 
