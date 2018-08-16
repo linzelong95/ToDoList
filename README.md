@@ -8,7 +8,10 @@
 # 启动命令
 * npm run dev
 # 运行截图
+![安卓界面.gif](https://github.com/linzelong95/ToDoList/blob/master/picture/todolist.gif)
+
 ![主界面.png](https://github.com/linzelong95/ToDoList/blob/master/picture/main.png)
+
 ##### 
 ![添加事项.png](https://github.com/linzelong95/ToDoList/blob/master/picture/add.png)
 ##### 
